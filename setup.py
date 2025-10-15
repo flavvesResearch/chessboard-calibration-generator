@@ -11,7 +11,7 @@ long_description = (this_directory / "README.md").read_text(encoding='utf-8')
 
 setup(
     name="opencv-chessboard-generator",
-    version="1.0.6",
+    version="1.0.7",
     author="batuhan ÖKMEN",
     author_email="batuhanokmen@gmail.com",
     description="A tool to generate chessboard patterns for OpenCV camera calibration",
