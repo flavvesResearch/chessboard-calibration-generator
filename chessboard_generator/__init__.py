@@ -4,8 +4,8 @@ A simple tool to generate chessboard patterns for OpenCV camera calibration
 """
 
 __version__ = "1.0.0"
-__author__ = "Your Name"
-__email__ = "your.email@example.com"
+__author__ = "batuhan ÖKMEN"
+__email__ = "batuhanokmen@gmail.com"
 
 from .generator import ChessboardGenerator
 

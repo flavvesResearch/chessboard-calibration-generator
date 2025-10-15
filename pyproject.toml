@@ -8,7 +8,7 @@ version = "1.0.0"
 description = "A tool to generate chessboard patterns for OpenCV camera calibration"
 readme = "README.md"
 authors = [
-    {name = "Your Name", email = "your.email@example.com"}
+    {name = "Batuhan ÖKMEN", email = "batuhanokmen@gmail.com"}
 ]
 license = {text = "MIT"}
 classifiers = [
@@ -32,9 +32,9 @@ dependencies = [
 requires-python = ">=3.7"
 
 [project.urls]
-Homepage = "https://github.com/yourusername/chessboard-calibration-generator"
-"Bug Reports" = "https://github.com/yourusername/chessboard-calibration-generator/issues"
-"Source" = "https://github.com/yourusername/chessboard-calibration-generator"
+Homepage = "https://github.com/flavvesResearch/chessboard-calibration-generator"
+"Bug Reports" = "https://github.com/flavvesResearch/chessboard-calibration-generator/issues"
+"Source" = "https://github.com/flavvesResearch/chessboard-calibration-generator"
 
 [project.scripts]
 chessboard-generator = "chessboard_generator.__main__:main"

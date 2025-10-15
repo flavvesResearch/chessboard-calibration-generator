@@ -12,12 +12,12 @@ long_description = (this_directory / "README.md").read_text(encoding='utf-8')
 setup(
     name="chessboard-calibration-generator",
     version="1.0.0",
-    author="Your Name",
-    author_email="your.email@example.com",
+    author="batuhan ÖKMEN",
+    author_email="batuhanokmen@gmail.com",
     description="A tool to generate chessboard patterns for OpenCV camera calibration",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/chessboard-calibration-generator",
+    url="https://github.com/flavvesResearch/chessboard-calibration-generator",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 5 - Production/Stable",
@@ -46,7 +46,7 @@ setup(
     },
     keywords="opencv calibration chessboard camera computer-vision",
     project_urls={
-        "Bug Reports": "https://github.com/yourusername/chessboard-calibration-generator/issues",
-        "Source": "https://github.com/yourusername/chessboard-calibration-generator",
+        "Bug Reports": "https://github.com/flavvesResearch/chessboard-calibration-generator/issues",
+        "Source": "https://github.com/flavvesResearch/chessboard-calibration-generator",
     },
 )
