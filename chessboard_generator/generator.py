@@ -113,7 +113,7 @@ class ChessboardGenerator:
         success = cv2.imwrite(filename, chessboard)
         
         if success:
-            print(f"✓ Chessboard saved successfully: {filename}")
+            print(f"[OK] Chessboard saved successfully: {filename}")
             print(f"  - Inner corners: {self.cols}x{self.rows}")
             print(f"  - Square size: {self.square_size_cm} cm")
             print(f"  - Image size: {chessboard.shape[1]}x{chessboard.shape[0]} pixels")
@@ -122,7 +122,7 @@ class ChessboardGenerator:
             print(f"  pattern_size = ({self.cols}, {self.rows})")
             print(f"  square_size = {self.square_size_cm}  # cm")
         else:
-            print(f"✗ Failed to save chessboard: {filename}")
+            print(f"[ERROR] Failed to save chessboard: {filename}")
         
         return success
     

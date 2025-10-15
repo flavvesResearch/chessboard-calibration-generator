@@ -33,6 +33,7 @@ chessboard-generator
 ```
 
 Follow the prompts to specify:
+
 - Number of inner corner columns (e.g., 6)
 - Number of inner corner rows (e.g., 9)
 - Square size in centimeters (default: 3.0)
@@ -104,10 +105,6 @@ MIT License
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
-
-## Development
-
-For development setup and automated releases, see [GITHUB_ACTIONS_GUIDE.md](GITHUB_ACTIONS_GUIDE.md)
 
 ## Author
 
