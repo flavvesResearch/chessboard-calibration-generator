@@ -1,8 +1,9 @@
 name: Publish to PyPI
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - "v*"
   workflow_dispatch:  # Manuel tetikleme için
 
 jobs:
@@ -27,32 +28,19 @@ jobs:
         python -m pip install --upgrade pip
         pip install build twine
         
-    - name: Extract version from tag
+    - name: Determine version
       id: get_version
       run: |
-        if [ "${{ github.event_name }}" == "release" ]; then
-          # Release event'inden version al
-          VERSION=${GITHUB_REF#refs/tags/v}
-          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
-          echo "Using version from release tag: $VERSION"
+        if [ "${{ github.event_name }}" = "push" ]; then
+          REF_NAME="${GITHUB_REF#refs/tags/}"
+          VERSION="${REF_NAME#v}"
+          echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Using version from tag: $VERSION"
         else
-          # Manuel tetikleme için mevcut versiyonu al
           VERSION=$(grep "version = " pyproject.toml | head -1 | cut -d'"' -f2)
-          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
           echo "Using version from pyproject.toml: $VERSION"
         fi
-        
-    - name: Update version in files
-      if: github.event_name == 'release'
-      run: |
-        VERSION=${{ steps.get_version.outputs.VERSION }}
-        # pyproject.toml güncelle
-        sed -i "s/version = \".*\"/version = \"$VERSION\"/" pyproject.toml
-        # setup.py güncelle
-        sed -i "s/version=\".*\"/version=\"$VERSION\"/" setup.py
-        # __init__.py güncelle
-        sed -i "s/__version__ = \".*\"/__version__ = \"$VERSION\"/" chessboard_generator/__init__.py
-        echo "Updated version to $VERSION in all files"
         
     - name: Build package
       run: |
@@ -68,13 +56,3 @@ jobs:
         TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
       run: |
         twine upload dist/*
-        
-    - name: Create GitHub Release Assets
-      if: github.event_name == 'release'
-      uses: softprops/action-gh-release@v1
-      with:
-        files: |
-          dist/*.whl
-          dist/*.tar.gz
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
