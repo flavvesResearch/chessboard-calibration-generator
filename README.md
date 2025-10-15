@@ -106,6 +106,12 @@ MIT License
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
+## Development
+
+For development setup and automated releases with GitHub Actions, see:
+- [Quick Start Guide](QUICKSTART.md)
+- [Detailed GitHub Actions Guide](GITHUB_ACTIONS_GUIDE.md)
+
 ## Author
 
 Batuhan ÖKMEN (batuhanokmen@gmail.com)
