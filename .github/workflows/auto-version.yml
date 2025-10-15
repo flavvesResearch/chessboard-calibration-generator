@@ -1,0 +1,111 @@
+name: Auto Version Bump
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+      - '.github/**'
+      - 'LICENSE'
+
+jobs:
+  bump-version:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.head_commit.message, '[no version]')"
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+        
+    - name: Determine version bump type
+      id: bump_type
+      run: |
+        # Commit mesajından bump tipini belirle
+        COMMIT_MSG="${{ github.event.head_commit.message }}"
+        
+        if [[ $COMMIT_MSG == *"[major]"* ]] || [[ $COMMIT_MSG == *"BREAKING CHANGE"* ]]; then
+          echo "BUMP=major" >> $GITHUB_OUTPUT
+          echo "Detected MAJOR version bump"
+        elif [[ $COMMIT_MSG == *"[minor]"* ]] || [[ $COMMIT_MSG == *"feat:"* ]] || [[ $COMMIT_MSG == *"feature:"* ]]; then
+          echo "BUMP=minor" >> $GITHUB_OUTPUT
+          echo "Detected MINOR version bump"
+        elif [[ $COMMIT_MSG == *"[patch]"* ]] || [[ $COMMIT_MSG == *"fix:"* ]] || [[ $COMMIT_MSG == *"bugfix:"* ]]; then
+          echo "BUMP=patch" >> $GITHUB_OUTPUT
+          echo "Detected PATCH version bump"
+        else
+          echo "BUMP=patch" >> $GITHUB_OUTPUT
+          echo "No specific bump type detected, defaulting to PATCH"
+        fi
+        
+    - name: Get current version
+      id: current_version
+      run: |
+        CURRENT=$(grep "version = " pyproject.toml | head -1 | cut -d'"' -f2)
+        echo "CURRENT=$CURRENT" >> $GITHUB_OUTPUT
+        echo "Current version: $CURRENT"
+        
+    - name: Calculate new version
+      id: new_version
+      run: |
+        CURRENT="${{ steps.current_version.outputs.CURRENT }}"
+        BUMP="${{ steps.bump_type.outputs.BUMP }}"
+        
+        IFS='.' read -ra VERSION_PARTS <<< "$CURRENT"
+        MAJOR="${VERSION_PARTS[0]}"
+        MINOR="${VERSION_PARTS[1]}"
+        PATCH="${VERSION_PARTS[2]}"
+        
+        if [ "$BUMP" == "major" ]; then
+          MAJOR=$((MAJOR + 1))
+          MINOR=0
+          PATCH=0
+        elif [ "$BUMP" == "minor" ]; then
+          MINOR=$((MINOR + 1))
+          PATCH=0
+        else
+          PATCH=$((PATCH + 1))
+        fi
+        
+        NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+        echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_OUTPUT
+        echo "New version: $NEW_VERSION"
+        
+    - name: Update version in files
+      run: |
+        NEW_VERSION="${{ steps.new_version.outputs.NEW_VERSION }}"
+        
+        # pyproject.toml güncelle
+        sed -i "s/version = \".*\"/version = \"$NEW_VERSION\"/" pyproject.toml
+        
+        # setup.py güncelle
+        sed -i "s/version=\".*\"/version=\"$NEW_VERSION\"/" setup.py
+        
+        # __init__.py güncelle
+        sed -i "s/__version__ = \".*\"/__version__ = \"$NEW_VERSION\"/" chessboard_generator/__init__.py
+        
+        echo "Updated version to $NEW_VERSION"
+        
+    - name: Commit version bump
+      run: |
+        NEW_VERSION="${{ steps.new_version.outputs.NEW_VERSION }}"
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git add pyproject.toml setup.py chessboard_generator/__init__.py
+        git commit -m "chore: bump version to $NEW_VERSION [skip ci]"
+        git tag -a "v$NEW_VERSION" -m "Version $NEW_VERSION"
+        
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.ref }}
+        tags: true

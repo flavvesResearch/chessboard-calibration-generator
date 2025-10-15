@@ -1,0 +1,81 @@
+name: CI Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ['3.8', '3.9', '3.10', '3.11']
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e .
+        pip install pytest
+        
+    - name: Test import
+      run: |
+        python -c "from chessboard_generator import ChessboardGenerator; print('Import successful')"
+        
+    - name: Test CLI
+      run: |
+        which chessboard-generator || where chessboard-generator
+        
+    - name: Test basic functionality
+      run: |
+        python -c "
+        from chessboard_generator import ChessboardGenerator
+        import os
+        gen = ChessboardGenerator(rows=6, cols=9, square_size_cm=3.0, dpi=300)
+        gen.save('test_output.png', add_info=False)
+        assert os.path.exists('test_output.png'), 'Output file not created'
+        print('Basic functionality test passed')
+        "
+        
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+        
+    - name: Install build tools
+      run: |
+        python -m pip install --upgrade pip
+        pip install build twine
+        
+    - name: Build package
+      run: |
+        python -m build
+        
+    - name: Check distribution
+      run: |
+        twine check dist/*
+        
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: dist-packages
+        path: dist/

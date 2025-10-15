@@ -1,4 +1,8 @@
-# Chessboard Calibration Generator
+# OpenCV Chessboard Generator
+
+[![PyPI version](https://badge.fury.io/py/opencv-chessboard-generator.svg)](https://badge.fury.io/py/opencv-chessboard-generator)
+[![Python versions](https://img.shields.io/pypi/pyversions/opencv-chessboard-generator.svg)](https://pypi.org/project/opencv-chessboard-generator/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A Python tool to generate high-quality chessboard patterns for OpenCV camera calibration.
 
@@ -15,7 +19,7 @@ A Python tool to generate high-quality chessboard patterns for OpenCV camera cal
 Install from PyPI:
 
 ```bash
-pip install chessboard-calibration-generator
+pip install opencv-chessboard-generator
 ```
 
 ## Usage
@@ -101,6 +105,10 @@ MIT License
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
+## Development
+
+For development setup and automated releases, see [GITHUB_ACTIONS_GUIDE.md](GITHUB_ACTIONS_GUIDE.md)
+
 ## Author
 
-Your Name (your.email@example.com)
+Batuhan ÖKMEN (batuhanokmen@gmail.com)
